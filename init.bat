@@ -7,10 +7,20 @@ echo Don't worry if nothing appears on the screen while typing. That's the way i
 echo.
 
 python -m venv %USERPROFILE%\CustomerSystem
+cd %USERPROFILE%\CustomerSystem
+git clone https://github.com/AlkisAzna/CustomerDecisionSystem.git
+
 call %USERPROFILE%\CustomerSystem\Scripts\activate.bat
 %USERPROFILE%\CustomerSystem\Scripts\python.exe -m pip install --upgrade pip
-pip install pandas=1.1.5 openpyxl=3.0.5 xlrd=1.2.0 matplotlib
+pip install -r %USERPROFILE%\CustomerSystem\CustomerDecisionSystem\requirements.txt
 call %USERPROFILE%\CustomerSystem\Scripts\deactivate.bat
 
 echo.
+pause
+
+
+@echo off
+
+%USERPROFILE%\CustomerSystem\Scripts\python.exe %USERPROFILE%\CustomerSystem\CustomerDecisionSystem\main_system.py
+
 pause
