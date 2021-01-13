@@ -17,10 +17,3 @@ call %USERPROFILE%\CustomerSystem\Scripts\deactivate.bat
 
 echo.
 pause
-
-
-@echo off
-
-%USERPROFILE%\CustomerSystem\Scripts\python.exe %USERPROFILE%\CustomerSystem\CustomerDecisionSystem\main_system.py
-
-pause
