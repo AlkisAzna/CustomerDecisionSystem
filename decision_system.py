@@ -74,6 +74,8 @@ class DecisionSystem:
         return usage_dict
 
     # Calculation methods
+    # Ipologismos twn diastimatwn twn varwn gia tis epiloges mas
+    # Vasizetai  sto diastima timwn kai tis diathesimes epiloges
     def calculate_point_distances(self, col_name):
         max_value = max(self.df[col_name])
         min_value = min(self.df[col_name])
@@ -97,6 +99,7 @@ class DecisionSystem:
         return equal_spaces
 
     # Calculate the function of each customer of each option depending on characteristics
+    # Ipologismos tis sinolikis xrisimotitas gia kathe katanalwti gia kathe epilogi gia kathe xaraktiristiko
     def calculate_weights(self):
         option_weights = {}
 
@@ -114,6 +117,7 @@ class DecisionSystem:
                     if "Ranking" in col:
                         continue
 
+                    # Ipologismos diastimatwn me vasi tin seira katata3is
                     if self.order_data[col] == "INCR":
                         max_value = max(self.df[col])
                         min_value = min(self.df[col])
@@ -197,6 +201,7 @@ class DecisionSystem:
 
         return ranking_weights
 
+    # Epe3ergasia dedomenwn eisodou apo to Lindo - Antikatastasi varwn stis times xrisimotitas twm autokinitwn gia kathe katanalwti
     def process_import_data(self):
         temp_weights_option = self.weights_per_option
         if "F" in self.imported_data:
@@ -222,6 +227,7 @@ class DecisionSystem:
         self.process_import_data()
         return
 
+    # Eksagwgi twn dedomenwn eisodou sto lindo stin arxiki periptwsi
     def export_lindo_data(self):
         temp_dict = self.weights_per_ranking
         temp_dict["F"] = "min{Sum(si) from i=1 to " + str(self.s_count - 1) + "}"
@@ -229,20 +235,21 @@ class DecisionSystem:
             "Conditions"] = "Sum(wij) = 1, s(i), w(ij) >= 0 where i = " + str(
             self.get_total_characteristics()) + " and j = distance for each characteristic"
         with open('Initial_Lindo_Settings.json', 'w') as outfile:
-            json.dump(temp_dict, outfile)
+            json.dump(temp_dict, outfile)  # Dimiourgia JSON arxeiou
         return
 
+    # Eksagwgi twn dedomenwn eisodou sto lindo sto provlima tis veltistopoihshs
     def export_optimizer_data(self, e_val):
         temp_dict = self.weights_per_ranking
         temp_dict["F"] = {}
-        for x in range(self.total_chars):
-            for idx, y in enumerate(self.distance_index):
-                for index in range(self.distance_index[y]):
-                    if index == 0:
-                        temp_dict["F"][str(x + 1)] = "w" + str(idx + 1) + str(index + 1)
-                    else:
-                        temp_dict["F"][str(x + 1)] = temp_dict["F"][str(x + 1)] + "w" + str(idx + 1) + str(index + 1)
-            temp_dict["F"][str(x + 1)] = "max{" + temp_dict["F"][str(x + 1)] + "}"
+        for idx, y in enumerate(self.distance_index):
+            temp_str = ""
+            for x in range(self.distance_index[y]):
+                if x == 0:
+                    temp_str = "w" + str(idx + 1) + str(x + 1)
+                else:
+                    temp_str = temp_str + " + " + "w" + str(idx + 1) + str(x + 1)
+            temp_dict["F"][str(idx + 1)] = "max{" + temp_str + "}"
             temp_dict["Condition1"] = "Sum(wij) = 1, s(i), w(ij) >= 0 where i = " + str(
                 self.get_total_characteristics()) + " and j = distance for each characteristic"
             lindo_val = (1.0 + e_val) * float(self.lindo_F)
