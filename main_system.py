@@ -27,13 +27,6 @@ def initialize_app():
     return file_path
 
 
-def import_settings():
-    lindo_path = Path(input("Import the file with the lindo produced variables:"))
-    while not lindo_path.exists():
-        lindo_path = Path(input("File not exists!Give me a correct one:"))
-    return lindo_path
-
-
 if __name__ == '__main__':
     path = initialize_app()
     # System introduces the minimum sum error problem for decision systems
@@ -43,9 +36,8 @@ if __name__ == '__main__':
 
     # Export lindo settings and import the solutions of solver
     input("Press any key to continue...")
-    my_system.export_lindo_data()
-    print("Lindo Settings exported successfully to json file!")
-    my_system.import_lindo_settings(import_settings())
+    my_system.gurobi_optimizer(True)
+    my_system.import_lindo_settings("Initial_Lindo_Output.json")
     my_system.export_in_excel("Initial_Usage_List.xlsx")
     my_system.create_figures("Initial_Results.svg", "Initial Usage values for each Customer and Product")
 
@@ -58,8 +50,7 @@ if __name__ == '__main__':
             break
         except ValueError:
             print("Wrong user input. Try again!")
-    my_system.export_optimizer_data(val)
-    print("Lindo Settings exported successfully to json file!")
-    my_system.import_lindo_settings(import_settings())
+    my_system.gurobi_optimizer(True)
+    my_system.import_lindo_settings("Optimization_Lindo_Output.json")
     my_system.export_in_excel("Optimizer_Usage_List.xlsx")
     my_system.create_figures("Optimization_Results.svg", "Optimization Usage values for each Customer and Product")
